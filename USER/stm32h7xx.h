@@ -55,7 +55,7 @@
 #define STM32H7xx_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif /* __cplusplus */
 
 /** @addtogroup Library_configuration_section
@@ -69,15 +69,15 @@
 #define STM32H7
 #endif /* STM32H7 */
 
-   
+
 /* Uncomment the line below according to the target STM32H7 device used in your
    application
   */
 
 #if !defined (STM32H743xx) && !defined (STM32H753xx) && !defined (STM32H750xx)
-  /* #define STM32H743xx */   /*!< STM32H743VI, STM32H743ZI, STM32H743II, STM32H743BI, STM32H743XI Devices */
-  /* #define STM32H753xx */   /*!< STM32H753VI, STM32H753ZI, STM32H753II, STM32H753BI, STM32H753XI Devices */
-  /* #define STM32H750xx */   /*!< STM32H750V, STM32H750I, STM32H750X Devices */
+/* #define STM32H743xx */   /*!< STM32H743VI, STM32H743ZI, STM32H743II, STM32H743BI, STM32H743XI Devices */
+/* #define STM32H753xx */   /*!< STM32H753VI, STM32H753ZI, STM32H753II, STM32H753BI, STM32H753XI Devices */
+/* #define STM32H750xx */   /*!< STM32H750V, STM32H750I, STM32H750X Devices */
 #endif
 
 /*  Tip: To avoid modifying this file each time you need to switch between these
@@ -89,7 +89,7 @@
    In this case, these drivers will not be included and the application code will
    be based on direct access to peripherals registers
    */
-  /*#define USE_HAL_DRIVER */
+/*#define USE_HAL_DRIVER */
 #endif /* USE_HAL_DRIVER */
 
 /**
@@ -113,13 +113,13 @@
   */
 
 #if defined(STM32H750xx)
-  #include "stm32h750xx.h"
+#include "stm32h750xx.h"
 #elif defined(STM32H743xx)
-  #include "stm32h743xx.h"
+#include "stm32h743xx.h"
 #elif defined(STM32H753xx)
-  #include "stm32h753xx.h"
+#include "stm32h753xx.h"
 #else
- #error "Please select first the target STM32H7xx device used in your application (in stm32h7xx.h file)"
+#error "Please select first the target STM32H7xx device used in your application (in stm32h7xx.h file)"
 #endif
 
 /**
@@ -131,21 +131,21 @@
   */
 typedef enum
 {
-  RESET = 0,
-  SET = !RESET
+    RESET = 0,
+    SET = !RESET
 } FlagStatus, ITStatus;
 
 typedef enum
 {
-  DISABLE = 0,
-  ENABLE = !DISABLE
+    DISABLE = 0,
+    ENABLE = !DISABLE
 } FunctionalState;
 #define IS_FUNCTIONAL_STATE(STATE) (((STATE) == DISABLE) || ((STATE) == ENABLE))
 
 typedef enum
 {
-  ERROR = 0,
-  SUCCESS = !ERROR
+    ERROR = 0,
+    SUCCESS = !ERROR
 } ErrorStatus;
 
 /**
@@ -178,7 +178,7 @@ typedef enum
   */
 
 #if defined (USE_HAL_DRIVER)
- #include "stm32h7xx_hal.h"
+#include "stm32h7xx_hal.h"
 #endif /* USE_HAL_DRIVER */
 
 

@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    Templates/Inc/stm32h7xx_it.h 
+  * @file    Templates/Inc/stm32h7xx_it.h
   * @author  MCD Application Team
   * @brief   This file contains the headers of the interrupt handlers.
   ******************************************************************************
@@ -38,8 +38,8 @@
 #define __STM32H7xx_IT_H
 
 #ifdef __cplusplus
- extern "C" {
-#endif 
+extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
