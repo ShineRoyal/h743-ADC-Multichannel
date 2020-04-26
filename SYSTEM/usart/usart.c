@@ -1,9 +1,5 @@
 #include "usart.h"
-//////////////////////////////////////////////////////////////////////////////////
-//如果使用os,则包括下面的头文件即可.
-#if SYSTEM_SUPPORT_OS
-    #include "includes.h"                   //os 使用
-#endif
+#include "tim.h"
 
 //加入以下代码,支持printf函数,而不需要选择use MicroLIB
 //#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
@@ -30,7 +26,7 @@ int fputc(int ch, FILE *f)
 }
 #endif
 
-#if EN_USART1_RX   //如果使能了接收
+
 //串口1中断服务程序
 //注意,读取USARTx->SR能避免莫名其妙的错误
 u8 USART_RX_BUF[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
@@ -39,6 +35,9 @@ u8 USART_RX_BUF[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
 //bit14，   接收到0x0d
 //bit13~0， 接收到的有效字节数目
 u16 USART_RX_STA = 0;     //接收状态标记
+
+u8 USART7_RX_BUF[USART_REC_LEN];
+u16 USART7_RX_STA = 0;     //接收状态标记
 
 u8 aRxBuffer[RXBUFFERSIZE];//HAL库使用的串口接收缓冲
 u8 bRxBuffer[RXBUFFERSIZE];//HAL库使用的串口接收缓冲
@@ -88,10 +87,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef *uartHandle)
         GPIO_InitStruct.Pin = GPIO_PIN_10;          //PA10
         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);     //初始化PA10
 
-#if EN_USART1_RX
+
         HAL_NVIC_EnableIRQ(USART1_IRQn);                //使能USART1中断通道
         HAL_NVIC_SetPriority(USART1_IRQn, 3, 3);        //抢占优先级3，子优先级3
-#endif
     }
     else if (uartHandle->Instance == UART7)
     {
@@ -147,12 +145,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef *uartHandle)
 
         /* USER CODE END UART8_MspInit 1 */
     }
-
-
-
-
 }
 
+//串口接收完成回调函数
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == USART1) //如果是串口1
@@ -179,14 +174,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
     else if (huart->Instance == UART7)
     {
-				printf("%c",bRxBuffer[0]);
+        __HAL_TIM_SET_COUNTER(&htim6, 0);
+        if (USART7_RX_STA & 0x8000) return;         //上次接收完成的未处理，直接退出
+        if (USART7_RX_STA == 0)                 //长度为0，接收到的是第一个字节，启动定时器
+        {
+            __HAL_TIM_CLEAR_FLAG(&htim6, TIM_FLAG_UPDATE);
+            HAL_TIM_Base_Start_IT(&htim6);
+        }
+        USART7_RX_BUF[USART7_RX_STA & 0x3FFF] = bRxBuffer[0];
+        USART7_RX_STA++;
+        if (USART7_RX_STA > (USART_REC_LEN - 1))USART7_RX_STA = 0;
     }
     else if (huart->Instance == UART8)
     {
-					printf("%c",cRxBuffer[0]);
+        printf("%c", cRxBuffer[0]);
     }
-
 }
+
 
 //串口1中断服务程序
 void USART1_IRQHandler(void)
@@ -211,7 +215,7 @@ void USART1_IRQHandler(void)
         if (timeout > maxDelay) break;
     }
 }
-#endif
+
 
 /**
  ******************************************************************************
@@ -346,6 +350,10 @@ void UART8_IRQHandler(void)
     }
     /* USER CODE END UART8_IRQn 1 */
 }
+
+
+
+
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

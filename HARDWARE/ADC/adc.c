@@ -27,6 +27,13 @@
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
+
+void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
+{
+    printf("DMA transfer error\r\n");
+}
+
+
 /* ADC1 init function */
 void MX_ADC1_Init(void)
 {
