@@ -531,6 +531,11 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\ADC\adc.c</FilePath>
             </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ADC\dma.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

@@ -2,7 +2,9 @@
 #include "delay.h"
 #include "usart.h"
 #include "adc.h"
+#include "dma.h"
 
+u16 buffer[128];
 int main(void)
 {
     u16 adcx;
@@ -12,24 +14,41 @@ int main(void)
     delay_init(400);                        //延时初始化
     uart_init(115200);                  //串口初始化
     printf("hello\r\n");
+    MX_DMA_Init();
     MX_ADC1_Init();
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t *)buffer, 16);
     while (1)
     {
-        HAL_ADC_Start(&hadc1);                               //开启ADC
-        HAL_ADC_PollForConversion(&hadc1, 10);               //轮询转换
-        for (int i = 0; i < 8; i++)
+        printf("\r\nvalue:");
+        for (int i = 0; i < 32; i++)
         {
-            printf("%d\t", (u16)HAL_ADC_GetValue(&hadc1));              //返回最近一次ADC1规则组的转换结果
+            if (i % 8 == 0)   printf("\r\n");
+            printf("%d\t", buffer[i]);              //返回最近一次ADC1规则组的转换结果
         }
-        printf("\r\n");
         delay_ms(500);
     }
 }
 
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    printf("DMA transfer complete\r\n");
+}
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    printf("DMA Half transfer complete\r\n");
+}
+
+void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
+{
+    printf("DMA transfer error\r\n");
+}
+
+
+
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
+    /* USER CODE BEGIN Error_Handler_Debug */
+    /* User can add his own implementation to report the HAL error return state */
 
-  /* USER CODE END Error_Handler_Debug */
+    /* USER CODE END Error_Handler_Debug */
 }
