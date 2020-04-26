@@ -3,6 +3,7 @@
 #include "usart.h"
 #include "adc.h"
 #include "dma.h"
+#include "tim.h"
 
 u16 buffer[128];
 int main(void)
@@ -16,7 +17,12 @@ int main(void)
     printf("hello\r\n");
     MX_DMA_Init();
     MX_ADC1_Init();
-    HAL_ADC_Start_DMA(&hadc1, (uint32_t *)buffer, 16);
+	  MX_TIM3_Init();
+	
+	  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)buffer, 16);
+		HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+	
+
     while (1)
     {
         printf("\r\nvalue:");
